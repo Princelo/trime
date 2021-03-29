@@ -21,6 +21,7 @@ package com.osfans.trime;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -62,13 +63,23 @@ public class Config {
 
   private Map<String, String> fallbackColors;
   private Map presetColorSchemes, presetKeyboards;
+  private boolean portrait = true;
+  private boolean landscape = false;
 
   public Config(Context context) {
+    if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      landscape = true;
+      portrait = false;
+    } else {
+      landscape = false;
+      portrait = true;
+    }
     self = this;
     mPref = Function.getPref(context);
     userDataDir = context.getString(R.string.default_user_data_dir);
     sharedDataDir = context.getString(R.string.default_shared_data_dir);
     themeName = mPref.getString("pref_selected_theme", "trime");
+    if (landscape) themeName = themeName.replace(".trime", "-landscape.trime");
     prepareRime(context);
     deployTheme(context);
     init();
@@ -344,6 +355,15 @@ public class Config {
 
   public static Config get(Context context) {
     if (self == null) self = new Config(context);
+    if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (!self.landscape) {
+          self = new Config(context);
+        }
+    } else {
+        if (self.landscape) {
+          self = new Config(context);
+        }
+    }
     return self;
   }
 
