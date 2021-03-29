@@ -507,6 +507,7 @@ public class Rime {
     Trime trime = Trime.getService();
     switch (message_type) {
       case "schema":
+        Config.clean();
         initSchema();
         if (trime != null) {
           trime.initKeyboard();

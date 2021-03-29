@@ -352,6 +352,9 @@ public class Config {
     return (Map<String, Object>) presetKeyboards.get(name);
   }
 
+  public static void clean() {
+    self = null;
+  }
 
   public static Config get(Context context) {
     if (self == null) self = new Config(context);
