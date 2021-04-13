@@ -214,6 +214,9 @@ public class Pref extends PreferenceActivity
         value = prefs.getBoolean(key, false);
         Rime.setShowSwitches(value);
         break;
+      case "sound_effect":
+        if (trime != null) trime.resetEffect();
+        break;
     }
   }
 

@@ -67,6 +67,19 @@
     <string name="show_switches">在候選欄中顯示狀態</string>
     <string name="show_preview">按鍵時彈出顯示字符</string>
     <string name="show_window">顯示懸浮窗口</string>
+    <string name="sound_effect">Sound Effect</string>
+    <string-array name="sound_effect_entries">
+        <item>Xperia</item>
+        <item>iOS</item>
+        <item>WindowsPhone</item>
+        <item>Wi</item>
+        <item>HeartBeat</item>
+        <item>Walking</item>
+        <item>Water</item>
+        <item>WoodenFish</item>
+        <item>Swipe</item>
+        <item>Android</item>
+    </string-array>
     <string name="inline_preedit">嵌入式編輯模式</string>
     <string-array name="inline_entries">
         <item>首選</item>
