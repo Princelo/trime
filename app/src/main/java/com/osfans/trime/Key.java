@@ -92,6 +92,33 @@ public class Key {
   private boolean on;
   private String popupCharacters;
   private int popupResId;
+  private String drawIcon = "";
+  private String hintLocation = "";
+  private String drawHintIcon = "";
+
+  public String getDrawIcon() {
+    return drawIcon;
+  }
+
+  public void setDrawIcon(String drawIcon) {
+    this.drawIcon = drawIcon;
+  }
+
+  public String getHintLocation() {
+    return hintLocation;
+  }
+
+  public void setHintLocation(String hintLocation) {
+    this.hintLocation = hintLocation;
+  }
+
+  public String getDrawHintIcon() {
+    return drawHintIcon;
+  }
+
+  public void setDrawHintIcon(String drawHintIcon) {
+    this.drawHintIcon = drawHintIcon;
+  }
 
   /**
    * Create an empty key with no attributes.

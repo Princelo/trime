@@ -20,12 +20,8 @@ package com.osfans.trime;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Align;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -781,6 +777,38 @@ public class KeyboardView extends View implements View.OnClickListener {
         }
         // Draw a drop shadow for the text
         paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
+        if (!"".equals(key.getDrawIcon())) {
+          Bitmap ic = null;
+          if ("enter".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_enter);
+          }
+          if ("delete".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_del);
+          }
+          if ("delete_material_dark".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_del_material_dark);
+          }
+          if ("delete_material_light".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_del_material_light);
+          }
+          if ("shift".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_shift_narrow_on);
+          }
+          if ("shift_off".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_shift_narrow_off);
+          }
+          if ("shift_dark".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_shift_narrow_on_material_dark);
+          }
+          if ("shift_dark_off".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_shift_narrow_off_material_dark);
+          }
+          if (null != ic) {
+            int drawX = key.getWidth()/2 - ic.getWidth()/2;
+            int drawY = key.getHeight()/2 - ic.getHeight()/2;
+            canvas.drawBitmap(ic, drawX, drawY, paint);
+          }
+        } else
         // Draw the text
         canvas.drawText(
             label,
@@ -795,11 +823,59 @@ public class KeyboardView extends View implements View.OnClickListener {
             mPaintSymbol.setTextSize(
                 key.getSymbol_text_size() != null ? key.getSymbol_text_size() : mSymbolSize);
             mPaintSymbol.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
+            if ("".equals(key.getHintLocation()) || "top".equals(key.getHintLocation()))
+              if (!"".equals(key.getDrawHintIcon())) {
+                Bitmap ic = null;
+                if ("select_all".equals(key.getDrawHintIcon())) {
+                  ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_selectall_mtrl_alpha);
+                }
+                if ("copy".equals(key.getDrawHintIcon())) {
+                  ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_copy_mtrl_am_alpha);
+                }
+                if (null != ic) {
+                  int drawX = key.getWidth()/2 - ic.getWidth()/2;
+                  float drawY = key.getHeight() / 10;
+                  canvas.drawBitmap(ic, drawX, drawY, paint);
+                }
+              } else
             canvas.drawText(
                 key.getSymbolLabel(),
                 left + key.getKey_symbol_offset_x(),
                 symbolBase + key.getKey_symbol_offset_y(),
                 mPaintSymbol);
+            if ("bottom".equals(key.getHintLocation())) {
+
+            }
+            if ("top_right".equals(key.getHintLocation())) {
+              if (!"".equals(key.getDrawHintIcon())) {
+                Bitmap ic = null;
+                if ("select_all".equals(key.getDrawHintIcon())) {
+                  ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_selectall_mtrl_alpha);
+                }
+                if ("copy".equals(key.getDrawHintIcon())) {
+                  ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_copy_mtrl_am_alpha);
+                }
+                if (null != ic) {
+                  int drawX = key.getWidth() / 5 * 3;
+                  float drawY = key.getHeight() / 10;
+                  canvas.drawBitmap(ic, drawX, drawY, paint);
+                }
+              } else
+                canvas.drawText(
+                        key.getSymbolLabel(),
+                        key.getWidth() / 4 * 3,
+                        symbolBase + key.getKey_symbol_offset_y(),
+                        mPaintSymbol);
+            }
+            if ("top_left".equals(key.getHintLocation())) {
+
+            }
+            if ("bottom_right".equals(key.getHintLocation())) {
+
+            }
+            if ("bottom_left".equals(key.getHintLocation())) {
+
+            }
           }
 
           if (!Function.isEmpty(hint)) {

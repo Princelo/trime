@@ -241,6 +241,9 @@ public class Keyboard {
       key.setGap(gap);
       key.setRow(row);
       key.setColumn(column);
+      key.setDrawIcon(Config.getString(mk, "draw_icon"));
+      key.setHintLocation(Config.getString(mk, "hint_location"));
+      key.setDrawHintIcon(Config.getString(mk, "draw_hint_icon"));
       column++;
       x += key.getWidth() + key.getGap();
       mKeys.add(key);
