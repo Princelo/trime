@@ -68,16 +68,12 @@
     <string name="show_window">显示悬浮窗口</string>
     <string name="sound_effect">Sound Effect</string>
     <string-array name="sound_effect_entries">
-        <item>Xperia</item>
-        <item>iOS</item>
-        <item>WindowsPhone</item>
-        <item>Wi</item>
-        <item>HeartBeat</item>
-        <item>Walking</item>
-        <item>Water</item>
-        <item>WoodenFish</item>
-        <item>Swipe</item>
+        <item>Modern</item>
+        <item>Traditional</item>
+        <item>Blip</item>
         <item>Android</item>
+        <item>Sony Xperia</item>
+        <item>System</item>
     </string-array>
     <string name="inline_preedit">嵌入式编辑模式</string>
     <string-array name="inline_entries">

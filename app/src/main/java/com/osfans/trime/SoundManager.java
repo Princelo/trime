@@ -16,41 +16,48 @@ import android.os.Build;
 
 public final class SoundManager {
     final private SoundPool mSoundPool;// 用来创建和播放声音
+    final private SoundPool mSoundPoolDeletes;// 用来创建和播放声音
+    final private SoundPool mSoundPoolSpaces;// 用来创建和播放声音
     final private HashMap<Integer, Integer> mSoundPoolMap;// 用来存储多声道
+    final private HashMap<Integer, Integer> mSoundPoolDeletesMap;// 用来存储多声道
+    final private HashMap<Integer, Integer> mSoundPoolSpacesMap;// 用来存储多声道
     final private AudioManager mAudioManager;// 服务句柄
     private final float maxVolume = 1;// 音量最大值
     private float mVolume;// 音量大小，范围为1-100
-    private float mSlideVolume;
     private int mSoundScheme;// 声音方案
 
     // 声音方案
-    private final static int SOUND_XPERIA = 0;// sony xperia
-    private final static int SOUND_IPHONE = 1;// iphone声音
-    private final static int SOUND_WP7 = 2;// wphone7声音
-    private final static int SOUND_WI = 3;// wi声音
-    private final static int SOUND_HEART_BEAT = 4;// 心跳声音
-    private final static int SOUND_WALKING = 5;// 走路声音
-    private final static int SOUND_WATER = 6;// 水滴声音
-    private final static int SOUND_WOODEN_FISH = 7;// 木鱼声音
-    private final static int SOUND_SWIPE = 8;// 点滑声音
-    private final static int SOUND_ANDROID = 9;// android声音
+    private final static int SOUND_MODERN = 0;
+    private final static int SOUND_TRADITIONAL = 1;
+    private final static int SOUND_BLIP = 2;
+    private final static int SOUND_ANDROID = 3;
+    private final static int SOUND_XPERIA = 4;
+    private final static int SOUND_SYSTEM = 5;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SoundManager(final Context context) {
         mSoundPool = new SoundPool(4, AudioManager.STREAM_SYSTEM, 0);// 4个声道
-        mSoundPoolMap = new HashMap<Integer, Integer>();
+        mSoundPoolDeletes = new SoundPool(4, AudioManager.STREAM_SYSTEM, 0);// 4个声道
+        mSoundPoolSpaces = new SoundPool(4, AudioManager.STREAM_SYSTEM, 0);// 4个声道
+        mSoundPoolMap = new HashMap<>();
+        mSoundPoolDeletesMap = new HashMap<>();
+        mSoundPoolSpacesMap = new HashMap<>();
         mAudioManager = (AudioManager) context
                 .getSystemService(Context.AUDIO_SERVICE);
         mSoundScheme = 0;
         this.addSound(context, SOUND_XPERIA, R.raw.res_raw_keypress_sound);
-        this.addSound(context, SOUND_IPHONE, R.raw.iphonekeypress);// 1号为默认按键iphone声音
-        this.addSound(context, SOUND_WP7, R.raw.w7keypress);// 2号为默认按键w7声音方案
-        this.addSound(context, SOUND_WI, R.raw.wi);
-        this.addSound(context, SOUND_HEART_BEAT, R.raw.xintiao);
-        this.addSound(context, SOUND_WALKING, R.raw.zoulu);
-        this.addSound(context, SOUND_WATER, R.raw.shuidi);
-        this.addSound(context, SOUND_WOODEN_FISH, R.raw.wii);
-        this.addSound(context, SOUND_SWIPE, R.raw.bling);
+        this.addSound(context, SOUND_MODERN, R.raw.fx_modern_standard);
+        this.addSoundDeletes(context, SOUND_MODERN, R.raw.fx_modern_delete);
+        this.addSoundSpaces(context, SOUND_MODERN, R.raw.fx_modern_spacebar);
+        this.addSound(context, SOUND_BLIP, R.raw.fx_blip_standard);
+        this.addSoundDeletes(context, SOUND_BLIP, R.raw.fx_blip_delete);
+        this.addSoundSpaces(context, SOUND_BLIP, R.raw.fx_blip_spacebar);
+        this.addSound(context, SOUND_TRADITIONAL, R.raw.fx_traditional_standard);
+        this.addSoundDeletes(context, SOUND_TRADITIONAL, R.raw.fx_traditional_function);
+        this.addSoundSpaces(context, SOUND_TRADITIONAL, R.raw.fx_traditional_function);
+        this.addSound(context, SOUND_ANDROID, R.raw.fx_android_standard);
+        this.addSoundDeletes(context, SOUND_ANDROID, R.raw.fx_android_function);
+        this.addSoundSpaces(context, SOUND_ANDROID, R.raw.fx_android_function);
     }
 
     // 初始化函数,参数依次为：上下文句柄、音量强度、音效方案
@@ -61,12 +68,6 @@ public final class SoundManager {
 
     public final void setVolumeFloat(final float val) {
         this.mVolume = val;
-        this.mSlideVolume = val;
-    }
-
-    public final void setSlideVolume(final int vol) {
-        final float percent = vol / 100.0f;// 音量百分比
-        mSlideVolume = maxVolume * percent;
     }
 
     public final void setSoundType(final int soundType) {
@@ -74,59 +75,57 @@ public final class SoundManager {
     }
 
     // 该函数负责添加声道
-    private final void addSound(final Context context, final int index,
-                                final int SoundID) {
+    private void addSound(final Context context, final int index,
+                          final int SoundID) {
         mSoundPoolMap.put(index, mSoundPool.load(context, SoundID, 1));// 加载默认按键音效
+    }
+    private void addSoundDeletes(final Context context, final int index,
+                                 final int SoundID) {
+        mSoundPoolDeletesMap.put(index, mSoundPoolDeletes.load(context, SoundID, 1));// 加载默认按键音效
+    }
+    private void addSoundSpaces(final Context context, final int index,
+                                final int SoundID) {
+        mSoundPoolSpacesMap.put(index, mSoundPoolSpaces.load(context, SoundID, 1));// 加载默认按键音效
     }
 
     // 播放声音函数
     public final void playSound() {
-//        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
-//                && mVolume > 0.001) {
-            if (mSoundScheme != SOUND_ANDROID) {
-                mSoundPool.play(mSoundPoolMap.get(mSoundScheme),
-                        mVolume, mVolume, 1, 0, 1f);
-            } else {
-                mAudioManager.playSoundEffect(
-                        AudioManager.FX_KEYPRESS_STANDARD, mVolume);
-            }
-//        }
+        if (mSoundScheme != SOUND_SYSTEM) {
+            mSoundPool.play(mSoundPoolMap.get(mSoundScheme),
+                    mVolume, mVolume, 1, 0, 1f);
+        } else {
+            mAudioManager.playSoundEffect(
+                    AudioManager.FX_KEYPRESS_STANDARD, mVolume);
+        }
     }
 
     public final void playEnterSound() {
-//        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
-//                && mVolume > 0.001) {
-            mAudioManager.playSoundEffect(AudioManager.FX_KEYPRESS_RETURN, mVolume);
-//        }
+        if (mSoundScheme != SOUND_SYSTEM && mSoundScheme != SOUND_XPERIA) {
+            mSoundPool.play(mSoundPoolMap.get(mSoundScheme),
+                    mVolume, mVolume, 1, 0, 1f);
+        } else {
+            mAudioManager.playSoundEffect(
+                    AudioManager.FX_KEYPRESS_RETURN, mVolume);
+        }
     }
 
     public final void playSpaceSound() {
-//        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
-//                && mVolume > 0.001) {
-            mAudioManager.playSoundEffect(AudioManager.FX_KEYPRESS_SPACEBAR, mVolume);
-//        }
+        if (mSoundScheme != SOUND_SYSTEM && mSoundScheme != SOUND_XPERIA) {
+            mSoundPoolSpaces.play(mSoundPoolSpacesMap.get(mSoundScheme),
+                    mVolume, mVolume, 1, 0, 1f);
+        } else {
+            mAudioManager.playSoundEffect(
+                    AudioManager.FX_KEYPRESS_SPACEBAR, mVolume);
+        }
     }
 
     public final void playBackspaceSound() {
-//        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
-//                && mVolume > 0.001) {
-            mAudioManager.playSoundEffect(AudioManager.FX_KEYPRESS_DELETE, mVolume);
-//        }
+        if (mSoundScheme != SOUND_SYSTEM && mSoundScheme != SOUND_XPERIA) {
+            mSoundPoolDeletes.play(mSoundPoolDeletesMap.get(mSoundScheme),
+                    mVolume, mVolume, 1, 0, 1f);
+        } else {
+            mAudioManager.playSoundEffect(
+                    AudioManager.FX_KEYPRESS_DELETE, mVolume);
+        }
     }
-
-    public final void playClickSound() {
-//        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
-//                && mVolume > 0.001) {
-            mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK, mVolume);
-//        }
-    }
-
-    public final void playSwipeSound() {
-//        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
-//                && mSlideVolume > 0.001) {
-            mSoundPool.play(mSoundPoolMap.get(SOUND_SWIPE),
-                    mSlideVolume, mSlideVolume, 1, 0, 1f);
-//        }
-    }
-
 }
