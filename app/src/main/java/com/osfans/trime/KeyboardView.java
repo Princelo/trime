@@ -18,12 +18,14 @@
 
 package com.osfans.trime;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.*;
 import android.graphics.Paint.Align;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Handler;
@@ -685,6 +687,7 @@ public class KeyboardView extends View implements View.OnClickListener {
     canvas.drawBitmap(mBuffer, 0, 0, null);
   }
 
+  @TargetApi(Build.VERSION_CODES.M)
   private void onBufferDraw() {
     if (mBuffer == null || mKeyboardChanged) {
       if (mBuffer == null
@@ -766,8 +769,23 @@ public class KeyboardView extends View implements View.OnClickListener {
         keyBackground.setBounds(0, 0, key.getWidth(), key.getHeight());
       }
       canvas.translate(key.getX() + kbdPaddingLeft, key.getY() + kbdPaddingTop);
-      keyBackground.draw(canvas);
+      if (key.shadow()) {
+        LayerDrawable layerList = null;
+        int[] colors1 = {Color.parseColor(key.getShadowTopColor()), Color.parseColor(key.getShadowBottomColor())};
+        GradientDrawable shadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors1);
+        shadow.setCornerRadius(key.getRound_corner() != null ? key.getRound_corner() : mKeyboard.getRoundCorner());
+        shadow.setBounds(1, 2, keyBackground.getBounds().right+1, keyBackground.getBounds().bottom+2);
+        Drawable[] layers = new Drawable[2];
+        layers[1] = keyBackground;
+        layers[0] = shadow;
 
+//      layerList.setLayerInset(1, 0, 0, 0, 0);
+//      layerList.setLayerInset(0, 6, 6, 6, 6);
+        layerList = new LayerDrawable(layers);
+        layerList.draw(canvas);
+      }
+      else
+      keyBackground.draw(canvas);
       if (!Function.isEmpty(label)) {
         // For characters, use large font. For labels like "Done", use small font.
         if (key.getKey_text_size() != null) {

@@ -25,6 +25,8 @@ import com.osfans.trime.enums.KeyEventType;
 import java.util.List;
 import java.util.Map;
 
+import static android.view.KeyEvent.KEYCODE_SPACE;
+
 /** {@link Keyboard 鍵盤}中的各個按鍵，包含單擊、長按、滑動等多種{@link Event 事件} */
 public class Key {
   public static final int[] KEY_STATE_NORMAL_ON = {
@@ -95,6 +97,9 @@ public class Key {
   private String drawIcon = "";
   private String hintLocation = "";
   private String drawHintIcon = "";
+  private boolean shadow;
+  private String shadowTopColor = "#313C41";
+  private String shadowBottomColor = "#172217";
 
   public String getDrawIcon() {
     return drawIcon;
@@ -118,6 +123,30 @@ public class Key {
 
   public void setDrawHintIcon(String drawHintIcon) {
     this.drawHintIcon = drawHintIcon;
+  }
+
+  public boolean shadow() {
+    return shadow;
+  }
+
+  public void setShadow(boolean shadow) {
+    this.shadow = shadow;
+  }
+
+  public String getShadowTopColor() {
+    return shadowTopColor;
+  }
+
+  public void setShadowTopColor(String shadowTopColor) {
+    this.shadowTopColor = shadowTopColor;
+  }
+
+  public String getShadowBottomColor() {
+    return shadowBottomColor;
+  }
+
+  public void setShadowBottomColor(String shadowBottomColor) {
+    this.shadowBottomColor = shadowBottomColor;
   }
 
   /**
@@ -548,6 +577,9 @@ public class Key {
     Event event = getEvent();
     if (!Function.isEmpty(label) && event == getClick() && (ascii == null && !Rime.isAsciiMode()))
       return label; //中文狀態顯示標籤
+    if (this.getCode() == KEYCODE_SPACE && null != label && !"".equals(label.trim())) {
+      return label;
+    }
     return event.getLabel();
   }
 
