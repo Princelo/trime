@@ -23,10 +23,8 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.*;
 import android.graphics.Paint.Align;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.StateListDrawable;
+import android.graphics.drawable.*;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -770,19 +768,17 @@ public class KeyboardView extends View implements View.OnClickListener {
       }
       canvas.translate(key.getX() + kbdPaddingLeft, key.getY() + kbdPaddingTop);
       if (key.shadow()) {
-        LayerDrawable layerList = null;
+        Drawable shadow = getResources().getDrawable(R.drawable.shadow_16393);
+        shadow.setBounds(-5, 0, keyBackground.getBounds().right, keyBackground.getBounds().bottom+10);
         int[] colors1 = {Color.parseColor(key.getShadowTopColor()), Color.parseColor(key.getShadowBottomColor())};
-        GradientDrawable shadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors1);
-        shadow.setCornerRadius(key.getRound_corner() != null ? key.getRound_corner() : mKeyboard.getRoundCorner());
-        shadow.setBounds(1, 2, keyBackground.getBounds().right+1, keyBackground.getBounds().bottom+2);
-        Drawable[] layers = new Drawable[2];
-        layers[1] = keyBackground;
-        layers[0] = shadow;
+        GradientDrawable shadowLeftRight = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors1);
+        shadowLeftRight.setCornerRadius(key.getRound_corner() != null ? key.getRound_corner() : mKeyboard.getRoundCorner());
+        shadowLeftRight.setBounds(-1, 0, keyBackground.getBounds().right+1, keyBackground.getBounds().bottom);
+        LayerDrawable ld = new LayerDrawable(new Drawable[] { shadow, shadowLeftRight, keyBackground });
+//        ld.setLayerInset(1, 5, 5, 0, 0); // inset the shadow so it doesn't start right at the left/top
+//        ld.setLayerInset(0, 0, 0, 5, 5); // inset the top drawable so we can leave a bit of space for the shadow to use
 
-//      layerList.setLayerInset(1, 0, 0, 0, 0);
-//      layerList.setLayerInset(0, 6, 6, 6, 6);
-        layerList = new LayerDrawable(layers);
-        layerList.draw(canvas);
+        ld.draw(canvas);
       }
       else
       keyBackground.draw(canvas);
