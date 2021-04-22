@@ -98,8 +98,13 @@ public class Key {
   private String hintLocation = "";
   private String drawHintIcon = "";
   private boolean shadow;
-  private String shadowTopColor = "#313C41";
+  private boolean shadowLight;
+  private String shadowTopColor = "#313C42";
   private String shadowBottomColor = "#172217";
+  private String shadowLightTopColor = "#FCFCFC";
+  private String shadowLightBottomColor = "#D9D9DB";
+  private int shadowH;
+  private int shadowV;
 
   public String getDrawIcon() {
     return drawIcon;
@@ -147,6 +152,46 @@ public class Key {
 
   public void setShadowBottomColor(String shadowBottomColor) {
     this.shadowBottomColor = shadowBottomColor;
+  }
+
+  public boolean shadowLight() {
+    return shadowLight;
+  }
+
+  public void setShadowLight(boolean shadowLight) {
+    this.shadowLight = shadowLight;
+  }
+
+  public String getShadowLightTopColor() {
+    return shadowLightTopColor;
+  }
+
+  public void setShadowLightTopColor(String shadowLightTopColor) {
+    this.shadowLightTopColor = shadowLightTopColor;
+  }
+
+  public String getShadowLightBottomColor() {
+    return shadowLightBottomColor;
+  }
+
+  public void setShadowLightBottomColor(String shadowLightBottomColor) {
+    this.shadowLightBottomColor = shadowLightBottomColor;
+  }
+
+  public int getShadowH() {
+    return shadowH;
+  }
+
+  public void setShadowH(int shadowH) {
+    this.shadowH = shadowH;
+  }
+
+  public int getShadowV() {
+    return shadowV;
+  }
+
+  public void setShadowV(int shadowV) {
+    this.shadowV = shadowV;
   }
 
   /**
@@ -577,7 +622,7 @@ public class Key {
     Event event = getEvent();
     if (!Function.isEmpty(label) && event == getClick() && (ascii == null && !Rime.isAsciiMode()))
       return label; //中文狀態顯示標籤
-    if (this.getCode() == KEYCODE_SPACE && null != label && !"".equals(label.trim())) {
+    if (this.getCode() == KEYCODE_SPACE) {
       return label;
     }
     return event.getLabel();

@@ -245,10 +245,17 @@ public class Keyboard {
       key.setHintLocation(Config.getString(mk, "hint_location"));
       key.setDrawHintIcon(Config.getString(mk, "draw_hint_icon"));
       key.setShadow(Config.getBoolean(mk, "shadow", false));
+      key.setShadowLight(Config.getBoolean(mk, "shadow_light", false));
       String shadowTopColor = Config.getString(mk, "shadow_top_color");
       String shadowBottomColor = Config.getString(mk, "shadow_bottom_color");
       key.setShadowTopColor("".equals(shadowTopColor) ? key.getShadowTopColor() : shadowTopColor);
       key.setShadowBottomColor("".equals(shadowBottomColor) ? key.getShadowBottomColor() : shadowBottomColor);
+      String shadowLightTopColor = Config.getString(mk, "shadow_light_top_color");
+      String shadowLightBottomColor = Config.getString(mk, "shadow_light_bottom_color");
+      key.setShadowLightTopColor("".equals(shadowLightTopColor) ? key.getShadowLightTopColor() : shadowLightTopColor);
+      key.setShadowLightBottomColor("".equals(shadowLightBottomColor) ? key.getShadowLightBottomColor() : shadowLightBottomColor);
+      key.setShadowH(Config.getInt(mk, "shadow_h", -99));
+      key.setShadowV(Config.getInt(mk, "shadow_v", -99));
       column++;
       x += key.getWidth() + key.getGap();
       mKeys.add(key);
