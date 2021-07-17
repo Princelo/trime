@@ -38,6 +38,13 @@
         <SwitchPreferenceCompat android:key="key_sound"
             app:iconSpaceReserved="false"
             android:title="@string/key_sound"/>
+        <ListPreference android:key="sound_effect"
+            app:iconSpaceReserved="false"
+            android:title="@string/sound_effect"
+            android:entries="@array/sound_effect_entries"
+            android:entryValues="@array/sound_effect_values"
+            android:defaultValue="0"
+            app:useSimpleSummaryProvider="true"/>
         <com.osfans.trime.settings.components.DialogSeekBarPreference
             android:widgetLayout="@layout/preference_widget_seekbar"
             android:key="key_sound_volume"

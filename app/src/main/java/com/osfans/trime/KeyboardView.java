@@ -40,6 +40,8 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import com.osfans.trime.enums.KeyEventType;
+import com.osfans.trime.ime.core.Trime;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -271,6 +273,9 @@ public class KeyboardView extends View implements View.OnClickListener {
     key_symbol_color = config.getColor("key_symbol_color");
     hilited_key_symbol_color = config.getColor("hilited_key_symbol_color");
     mShadowColor = config.getColor("shadow_color");
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      Trime.getService().getWindow().getWindow().setNavigationBarColor(mShadowColor);
+    }
 
     mSymbolSize = config.getPixel("symbol_text_size");
     mKeyTextSize = config.getPixel("key_text_size");

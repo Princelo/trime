@@ -58,6 +58,9 @@ class KeyboardFragment: PreferenceFragmentCompat(),
             "show_switches" -> {
                 sharedPreferences?.getBoolean(key, false)?.let { Rime.setShowSwitches(it) }
             }
+            "sound_effect" -> {
+                trime?.resetEffect()
+            }
         }
     }
 

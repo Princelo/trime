@@ -397,6 +397,10 @@ public class Trime extends InputMethodService
     mFloatingWindow.setBackgroundDrawable(d);
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP)
       mFloatingWindow.setElevation(mConfig.getPixel("layout/elevation"));
+    Integer candidateBgColor = mConfig.getColor("candidate_bg_color");
+    if (candidateBgColor != null)
+      mCandidateContainer.setBackgroundColor(candidateBgColor);
+    else
     mCandidateContainer.setBackgroundColor(mConfig.getColor("back_color"));
   }
 
