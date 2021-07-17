@@ -44,6 +44,7 @@ public class Effect {
   private Vibrator vibrator;
   private boolean soundOn;
   private AudioManager audioManager;
+  private SoundManager soundManager;
   private boolean isSpeakCommit, isSpeakKey;
   private TextToSpeech mTTS;
 
@@ -69,8 +70,12 @@ public class Effect {
     volume = pref.getInt("key_sound_volume", volume);
     volumeFloat = (float) (1 - (Math.log(MAX_VOLUME - volume) / Math.log(MAX_VOLUME)));
     soundOn = pref.getBoolean("key_sound", false);
-    if (soundOn && (audioManager == null)) {
+    audioManager = null;
+    if (soundOn) {
       audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+      soundManager = new SoundManager(context);
+      soundManager.setVolumeFloat(volumeFloat);
+      soundManager.setSoundType(Integer.parseInt(pref.getString("sound_effect", "0")));
     }
 
     isSpeakCommit = pref.getBoolean("speak_commit", false);
@@ -99,22 +104,20 @@ public class Effect {
 
   public void playSound(final int code) {
     if (soundOn && (audioManager != null)) {
-      final int sound;
       switch (code) {
         case KeyEvent.KEYCODE_DEL:
-          sound = AudioManager.FX_KEYPRESS_DELETE;
+          soundManager.playBackspaceSound();
           break;
         case KeyEvent.KEYCODE_ENTER:
-          sound = AudioManager.FX_KEYPRESS_RETURN;
+          soundManager.playEnterSound();
           break;
         case KeyEvent.KEYCODE_SPACE:
-          sound = AudioManager.FX_KEYPRESS_SPACEBAR;
+          soundManager.playSpaceSound();
           break;
         default:
-          sound = AudioManager.FX_KEYPRESS_STANDARD;
+          soundManager.playSound();
           break;
       }
-      audioManager.playSoundEffect(sound, volumeFloat);
     }
   }
 

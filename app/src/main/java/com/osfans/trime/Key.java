@@ -25,6 +25,8 @@ import com.osfans.trime.enums.KeyEventType;
 import java.util.List;
 import java.util.Map;
 
+import static android.view.KeyEvent.KEYCODE_SPACE;
+
 /** {@link Keyboard 鍵盤}中的各個按鍵，包含單擊、長按、滑動等多種{@link Event 事件} */
 public class Key {
   public static final int[] KEY_STATE_NORMAL_ON = {
@@ -92,6 +94,105 @@ public class Key {
   private boolean on;
   private String popupCharacters;
   private int popupResId;
+  private String drawIcon = "";
+  private String hintLocation = "";
+  private String drawHintIcon = "";
+  private boolean shadow;
+  private boolean shadowLight;
+  private String shadowTopColor = "#313C42";
+  private String shadowBottomColor = "#172217";
+  private String shadowLightTopColor = "#FCFCFC";
+  private String shadowLightBottomColor = "#D9D9DB";
+  private int shadowH;
+  private int shadowV;
+
+  public String getDrawIcon() {
+    return drawIcon;
+  }
+
+  public void setDrawIcon(String drawIcon) {
+    this.drawIcon = drawIcon;
+  }
+
+  public String getHintLocation() {
+    return hintLocation;
+  }
+
+  public void setHintLocation(String hintLocation) {
+    this.hintLocation = hintLocation;
+  }
+
+  public String getDrawHintIcon() {
+    return drawHintIcon;
+  }
+
+  public void setDrawHintIcon(String drawHintIcon) {
+    this.drawHintIcon = drawHintIcon;
+  }
+
+  public boolean shadow() {
+    return shadow;
+  }
+
+  public void setShadow(boolean shadow) {
+    this.shadow = shadow;
+  }
+
+  public String getShadowTopColor() {
+    return shadowTopColor;
+  }
+
+  public void setShadowTopColor(String shadowTopColor) {
+    this.shadowTopColor = shadowTopColor;
+  }
+
+  public String getShadowBottomColor() {
+    return shadowBottomColor;
+  }
+
+  public void setShadowBottomColor(String shadowBottomColor) {
+    this.shadowBottomColor = shadowBottomColor;
+  }
+
+  public boolean shadowLight() {
+    return shadowLight;
+  }
+
+  public void setShadowLight(boolean shadowLight) {
+    this.shadowLight = shadowLight;
+  }
+
+  public String getShadowLightTopColor() {
+    return shadowLightTopColor;
+  }
+
+  public void setShadowLightTopColor(String shadowLightTopColor) {
+    this.shadowLightTopColor = shadowLightTopColor;
+  }
+
+  public String getShadowLightBottomColor() {
+    return shadowLightBottomColor;
+  }
+
+  public void setShadowLightBottomColor(String shadowLightBottomColor) {
+    this.shadowLightBottomColor = shadowLightBottomColor;
+  }
+
+  public int getShadowH() {
+    return shadowH;
+  }
+
+  public void setShadowH(int shadowH) {
+    this.shadowH = shadowH;
+  }
+
+  public int getShadowV() {
+    return shadowV;
+  }
+
+  public void setShadowV(int shadowV) {
+    this.shadowV = shadowV;
+  }
 
   /**
    * Create an empty key with no attributes.
@@ -521,6 +622,9 @@ public class Key {
     Event event = getEvent();
     if (!Function.isEmpty(label) && event == getClick() && (ascii == null && !Rime.isAsciiMode()))
       return label; //中文狀態顯示標籤
+    if (this.getCode() == KEYCODE_SPACE) {
+      return label;
+    }
     return event.getLabel();
   }
 

@@ -18,6 +18,7 @@
 
 package com.osfans.trime.ime.core;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -529,6 +530,7 @@ public class Trime extends InputMethodService
     mComposition.setShowComment(show_comment);
   }
 
+  @TargetApi(VERSION_CODES.M)
   @Override
   public View onCreateCandidatesView() {
     LayoutInflater inflater = getLayoutInflater();

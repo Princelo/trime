@@ -69,6 +69,15 @@
     <string name="show_switches">Show switches in candidate bar</string>
     <string name="show_preview">Popup on keypress</string>
     <string name="show_window">Show floating window when composing</string>
+    <string name="sound_effect">Sound Effect</string>
+    <string-array name="sound_effect_entries">
+        <item>Modern</item>
+        <item>Traditional</item>
+        <item>Blip</item>
+        <item>Android</item>
+        <item>Sony Xperia</item>
+        <item>System</item>
+    </string-array>
     <string name="inline_preedit">Composing text in editor</string>
     <string-array name="inline_entries">
         <item>Preview</item>

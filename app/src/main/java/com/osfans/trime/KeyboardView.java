@@ -18,17 +18,13 @@
 
 package com.osfans.trime;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Align;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.StateListDrawable;
+import android.graphics.drawable.*;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -689,6 +685,7 @@ public class KeyboardView extends View implements View.OnClickListener {
     canvas.drawBitmap(mBuffer, 0, 0, null);
   }
 
+  @TargetApi(Build.VERSION_CODES.M)
   private void onBufferDraw() {
     if (mBuffer == null || mKeyboardChanged) {
       if (mBuffer == null
@@ -770,8 +767,38 @@ public class KeyboardView extends View implements View.OnClickListener {
         keyBackground.setBounds(0, 0, key.getWidth(), key.getHeight());
       }
       canvas.translate(key.getX() + kbdPaddingLeft, key.getY() + kbdPaddingTop);
-      keyBackground.draw(canvas);
+      if (key.shadow()) {
+        Drawable shadow = null;
+        if (key.shadowLight()) {
+          shadow = getResources().getDrawable(R.drawable.bg_keyboard_shadow);
+          int shadowV = 6;
+          if (key.getShadowV() != -99) shadowV = key.getShadowV();
+          int shadowH = -3;
+          if (key.getShadowH() != -99) shadowV = key.getShadowV();
+          shadow.setBounds(-shadowH, 20, keyBackground.getBounds().right+shadowH, keyBackground.getBounds().bottom+shadowV);
+        } else {
+          shadow = getResources().getDrawable(R.drawable.shadow_16393);
+          int shadowV = 10;
+          if (key.getShadowV() != -99) shadowV = key.getShadowV();
+          int shadowH = 0;
+          if (key.getShadowH() != -99) shadowV = key.getShadowV();
+          shadow.setBounds(-5-shadowH, 0, keyBackground.getBounds().right+shadowH, keyBackground.getBounds().bottom+shadowV);
+        }
+        int[] colors1 = {Color.parseColor(key.getShadowTopColor()), Color.parseColor(key.getShadowBottomColor())};
+        if (key.shadowLight()) {
+          colors1 = new int []{Color.parseColor(key.getShadowLightTopColor()), Color.parseColor(key.getShadowLightBottomColor())};
+        }
+        GradientDrawable shadowLeftRight = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors1);
+        shadowLeftRight.setCornerRadius(key.getRound_corner() != null ? key.getRound_corner() : mKeyboard.getRoundCorner());
+        shadowLeftRight.setBounds(-1, 0, keyBackground.getBounds().right+1, keyBackground.getBounds().bottom);
+        LayerDrawable ld = new LayerDrawable(new Drawable[] { shadow, shadowLeftRight, keyBackground });
+//        ld.setLayerInset(1, 5, 5, 0, 0); // inset the shadow so it doesn't start right at the left/top
+//        ld.setLayerInset(0, 0, 0, 5, 5); // inset the top drawable so we can leave a bit of space for the shadow to use
 
+        ld.draw(canvas);
+      }
+      else
+      keyBackground.draw(canvas);
       if (!Function.isEmpty(label)) {
         // For characters, use large font. For labels like "Done", use small font.
         if (key.getKey_text_size() != null) {
@@ -781,6 +808,65 @@ public class KeyboardView extends View implements View.OnClickListener {
         }
         // Draw a drop shadow for the text
         paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
+        if (!"".equals(key.getDrawIcon())) {
+          Bitmap ic = null;
+          if ("enter".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_enter);
+          }
+          if ("delete".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_del);
+          }
+          if ("delete_material_dark".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_del_material_dark);
+          }
+          if ("delete_material_light".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_del_material_light);
+          }
+          if ("shift".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_shift_narrow_on);
+          }
+          if ("shift_off".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_shift_narrow_off);
+          }
+          if ("shift_dark".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_shift_narrow_on_material_dark);
+          }
+          if ("shift_dark_off".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_shift_narrow_off_material_dark);
+          }
+          if ("copy".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_copy_mtrl_am_alpha);
+          }
+          if ("cut".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_cut_mtrl_alpha);
+          }
+          if ("paste".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_paste_mtrl_am_alpha);
+          }
+          if ("select_all".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_selectall_mtrl_alpha);
+          }
+          if ("globe".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_globe_material_dark_theme);
+          }
+          if ("next".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_ime_action_next);
+          }
+          if ("number".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_main_category_number_dark_theme);
+          }
+          if ("smiley".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_main_category_smiley_dark_theme);
+          }
+          if ("symbol".equals(key.getDrawIcon())) {
+            ic = BitmapFactory.decodeResource(getResources(), R.drawable.ic_key_main_category_symbol_dark_theme);
+          }
+          if (null != ic) {
+            int drawX = key.getWidth()/2 - ic.getWidth()/2;
+            int drawY = key.getHeight()/2 - ic.getHeight()/2;
+            canvas.drawBitmap(ic, drawX, drawY, paint);
+          }
+        } else
         // Draw the text
         canvas.drawText(
             label,
@@ -795,11 +881,59 @@ public class KeyboardView extends View implements View.OnClickListener {
             mPaintSymbol.setTextSize(
                 key.getSymbol_text_size() != null ? key.getSymbol_text_size() : mSymbolSize);
             mPaintSymbol.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
+            if ("".equals(key.getHintLocation()) || "top".equals(key.getHintLocation()))
+              if (!"".equals(key.getDrawHintIcon())) {
+                Bitmap ic = null;
+                if ("select_all".equals(key.getDrawHintIcon())) {
+                  ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_selectall_mtrl_alpha_small);
+                }
+                if ("copy".equals(key.getDrawHintIcon())) {
+                  ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_copy_mtrl_am_alpha_small);
+                }
+                if (null != ic) {
+                  int drawX = key.getWidth()/2 - ic.getWidth()/2;
+                  float drawY = key.getHeight() / 10;
+                  canvas.drawBitmap(ic, drawX, drawY, paint);
+                }
+              } else
             canvas.drawText(
                 key.getSymbolLabel(),
                 left + key.getKey_symbol_offset_x(),
                 symbolBase + key.getKey_symbol_offset_y(),
                 mPaintSymbol);
+            if ("bottom".equals(key.getHintLocation())) {
+
+            }
+            if ("top_right".equals(key.getHintLocation())) {
+              if (!"".equals(key.getDrawHintIcon())) {
+                Bitmap ic = null;
+                if ("select_all".equals(key.getDrawHintIcon())) {
+                  ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_selectall_mtrl_alpha_small);
+                }
+                if ("copy".equals(key.getDrawHintIcon())) {
+                  ic = BitmapFactory.decodeResource(getResources(), R.drawable.abc_ic_menu_copy_mtrl_am_alpha_small);
+                }
+                if (null != ic) {
+                  int drawX = key.getWidth() / 10 * 7;
+                  float drawY = key.getHeight() / 10;
+                  canvas.drawBitmap(ic, drawX, drawY, paint);
+                }
+              } else
+                canvas.drawText(
+                        key.getSymbolLabel(),
+                        key.getWidth() / 4 * 3,
+                        symbolBase + key.getKey_symbol_offset_y(),
+                        mPaintSymbol);
+            }
+            if ("top_left".equals(key.getHintLocation())) {
+
+            }
+            if ("bottom_right".equals(key.getHintLocation())) {
+
+            }
+            if ("bottom_left".equals(key.getHintLocation())) {
+
+            }
           }
 
           if (!Function.isEmpty(hint)) {
